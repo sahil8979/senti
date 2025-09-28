@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carbon Sentinel - Top Manager Dashboard</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom class for smooth sidebar transition */
+        .sidebar {
+            transition: transform 0.2s ease-in-out;
+        }
+        /* Hide the scrollbar but allow scrolling */
+        .overflow-y-auto-hidden-scrollbar {
+            -ms-overflow-style: none; 
+            scrollbar-width: none; 
+        }
+        .overflow-y-auto-hidden-scrollbar::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+        }
+    </style>
+</head>
+<body class="bg-gray-50 overflow-hidden">
+
+    <!-- Icon Definitions (Inline SVGs) -->
+    <script>
+        const DashboardIcon = (props) => `<svg class="${props.class}" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>`;
+        const ReportIcon = (props) => `<svg class="${props.class}" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>`;
+        const AnalysisIcon = (props) => `<svg class="${props.class}" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6l-6.5 6.5l-2.5-2.5L2 17"/><polyline points="22 6 18 6 18 10"/></svg>`;
+        const LogoutIcon = (props) => `<svg class="${props.class}" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>`;
+        const AlertIcon = (props) => `<svg class="${props.class}" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`;
+        const CheckIcon = (props) => `<svg class="${props.class}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+    </script>
+    
+    <div class="flex h-screen overflow-hidden">
+        
+        <!-- Mobile Sidebar Toggle Button -->
+        <button id="sidebar-toggle" class="lg:hidden fixed top-4 left-4 z-50 p-2 bg-emerald-600 text-white rounded-lg shadow-lg" aria-label="Toggle sidebar">
+            <svg id="menu-icon" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="display: block;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+            <svg id="close-icon" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="display: none;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar bg-white shadow-xl w-64 flex flex-col fixed inset-y-0 left-0 transform -translate-x-full lg:relative lg:translate-x-0 z-40">
+            <div class="p-6 flex items-center space-x-3 border-b border-gray-100">
+                <svg class="h-8 w-8 text-emerald-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
+                </svg>
+                <span class="font-extrabold text-xl text-gray-800">Carbon Sentinel</span>
+            </div>
+
+            <nav class="flex-1 px-4 py-6 space-y-2">
+                <a href="#" class="flex items-center p-3 rounded-xl text-gray-800 bg-emerald-100 font-semibold shadow-inner text-sm">
+                    <span data-icon="DashboardIcon" class="h-5 w-5 text-emerald-600 mr-3"></span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="flex items-center p-3 rounded-xl text-gray-600 hover:bg-gray-100 transition duration-150 text-sm">
+                    <span data-icon="ReportIcon" class="h-5 w-5 text-gray-400 mr-3"></span>
+                    <span>Reports</span>
+                </a>
+                <a href="#" class="flex items-center p-3 rounded-xl text-gray-600 hover:bg-gray-100 transition duration-150 text-sm">
+                    <span data-icon="AnalysisIcon" class="h-5 w-5 text-gray-400 mr-3"></span>
+                    <span>Strategic Analysis</span>
+                </a>
+            </nav>
+
+            <div class="px-4 py-6 border-t border-gray-100 mt-auto">
+                <a href="login.html" id="logout-btn" class="flex items-center p-3 rounded-xl text-red-600 hover:bg-red-50 transition duration-150 text-sm font-medium">
+                    <span data-icon="LogoutIcon" class="h-5 w-5 text-red-600 mr-3"></span>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Mobile Sidebar Overlay (Clicking this closes the sidebar) -->
+        <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden lg:hidden"></div>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-4 lg:p-8 overflow-y-auto overflow-y-auto-hidden-scrollbar">
+            <div class="max-w-7xl mx-auto">
+                <!-- Header -->
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center pb-6 border-b border-gray-200">
+                    <div>
+                        <h1 class="text-3xl font-bold text-gray-900">Top Manager Dashboard</h1>
+                        <p class="text-gray-500 mt-1">Company-wide CBAM Compliance Overview</p>
+                    </div>
+                    <div class="flex items-center space-x-4 mt-4 sm:mt-0 p-3 bg-gray-100 rounded-xl">
+                        <img
+                            class="inline-block h-10 w-10 rounded-full ring-2 ring-white object-cover"
+                            src="https://placehold.co/40x40/047857/ffffff?text=JS"
+                            onerror="this.onerror=null; this.src='https://placehold.co/40x40/047857/ffffff?text=JS';"
+                            alt="Jane Smith Avatar"
+                        />
+                        <div>
+                            <p class="font-semibold text-sm">Jane Smith</p>
+                            <p class="text-xs text-gray-500">Head of Compliance</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Key Metrics -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
+                    <!-- Metric 1 -->
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 transform hover:shadow-xl transition duration-300">
+                        <h3 class="text-sm font-medium text-gray-500 uppercase">Total Est. CBAM Liability</h3>
+                        <p class="text-4xl font-extrabold text-gray-900 mt-2">€17.8M</p>
+                        <p class="text-xs text-gray-400 mt-1">Projected for Q4 2025</p>
+                    </div>
+                    <!-- Metric 2 -->
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 transform hover:shadow-xl transition duration-300">
+                        <h3 class="text-sm font-medium text-gray-500 uppercase">Verified Data Ratio</h3>
+                        <p class="text-4xl font-extrabold text-emerald-600 mt-2">98.2%</p>
+                        <p class="text-xs text-gray-400 mt-1">Across all active batches</p>
+                    </div>
+                    <!-- Metric 3 -->
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 transform hover:shadow-xl transition duration-300">
+                        <h3 class="text-sm font-medium text-gray-500 uppercase flex items-center">Compliance Alerts <span data-icon="AlertIcon" class="w-4 h-4 text-red-500 ml-2"></span></h3>
+                        <p class="text-4xl font-extrabold text-red-600 mt-2">3</p>
+                        <p class="text-xs text-gray-400 mt-1">High-priority flags</p>
+                    </div>
+                    <!-- Metric 4 -->
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100 transform hover:shadow-xl transition duration-300">
+                        <h3 class="text-sm font-medium text-gray-500 uppercase">Quarterly Reporting Status</h3>
+                        <p class="text-4xl font-extrabold text-blue-600 mt-2">85%</p>
+                        <p class="text-xs text-gray-400 mt-1">25 days until deadline</p>
+                    </div>
+                </div>
+                
+                <!-- Confirmation Message Placeholder -->
+                <div id="confirmation-message" class="mt-8 p-4 bg-emerald-100 border border-emerald-300 text-emerald-800 rounded-xl hidden transition duration-300">
+                    <p class="font-medium flex items-center">
+                        <span data-icon="CheckIcon" class="w-5 h-5 mr-2"></span>
+                        <span id="confirmation-text"></span>
+                    </p>
+                </div>
+
+                <!-- PROCESS MANAGER OVERVIEW TABLE (TEAM MANAGEMENT) -->
+                <div class="mt-10">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-semibold text-gray-800 border-b pb-2 w-full">Team Management & Data Verification Status</h2>
+                        
+                        <!-- UPDATED: Button is now a link to the batch creation page -->
+                        <a href="create-batch.html" class="hidden sm:block bg-emerald-600 text-white font-semibold py-2 px-4 rounded-xl shadow-md hover:bg-emerald-700 transition duration-150 whitespace-nowrap">
+                            Initiate New Batch
+                        </a>
+                    </div>
+
+                    <div class="bg-white border rounded-xl shadow-lg overflow-x-auto">
+                        <table class="min-w-full text-sm text-left text-gray-500">
+                            <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3">Manager</th>
+                                    <th class="px-6 py-3">Active Batches</th>
+                                    <th class="px-6 py-3">Data Verification Progress</th>
+                                    <th class="px-6 py-3">Alerts</th>
+                                    <th class="px-6 py-3"></th>
+                                </tr>
+                            </thead>
+                            <tbody id="manager-table-body">
+                                <!-- Dynamic rows will be inserted here by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- CHARTS AND TABLES SECTION (Strategic Overview Grid) -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-10">
+                    
+                    <!-- Supplier & Origin Risk Table (1/3 width) -->
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">Supplier & Origin Risk</h2>
+                        <div class="bg-white border rounded-xl shadow-lg overflow-hidden">
+                            <table class="min-w-full text-sm text-left text-gray-500">
+                                <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+                                    <tr>
+                                        <th class="px-4 py-3">Supplier</th>
+                                        <th class="px-4 py-3">Origin</th>
+                                        <th class="px-4 py-3">Risk</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="bg-white border-b hover:bg-gray-50 transition duration-150">
+                                        <td class="px-4 py-3 font-medium text-gray-900">Global Ore Inc.</td>
+                                        <td class="px-4 py-3">Brazil</td>
+                                        <td class="px-4 py-3">
+                                            <span class="inline-flex items-center rounded-full bg-yellow-100 px-2 py-1 text-xs font-medium text-yellow-800">
+                                                Medium
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr class="bg-white border-b hover:bg-gray-50 transition duration-150">
+                                        <td class="px-4 py-3 font-medium text-gray-900">Coal Co.</td>
+                                        <td class="px-4 py-3">Australia</td>
+                                        <td class="px-4 py-3">
+                                            <span class="inline-flex items-center rounded-full bg-emerald-100 px-2 py-1 text-xs font-medium text-emerald-800">
+                                                Low
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr class="bg-white hover:bg-gray-50 transition duration-150">
+                                        <td class="px-4 py-3 font-medium text-gray-900">Eastern Minerals</td>
+                                        <td class="px-4 py-3">China</td>
+                                        <td class="px-4 py-3">
+                                            <span class="inline-flex items-center rounded-full bg-red-100 px-2 py-1 text-xs font-medium text-red-800">
+                                                High
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Emissions Chart (2/3 width) -->
+                    <div class="lg:col-span-2">
+                        <h2 class="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">Process Overview & Emissions</h2>
+                        <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                            <h3 class="text-lg font-medium text-gray-700 mb-4">Emissions Breakdown by Production Phase</h3>
+                            <!-- Chart Container -->
+                            <div class="h-80 w-full flex justify-center">
+                                <canvas id="emissionsChart" class="max-w-sm"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- JavaScript for Persistence, Dynamic Rendering, and Charting -->
+    <script>
+        // Global Batch ID counter and detailed tracking (Initialized in loadDashboardState)
+        let globalBatchCounter = 0; 
+        let activeBatchesDetailed = []; 
+        let batchManagers = [];
+        const DEFAULT_MANAGERS = [
+            { id: 1, name: "John Doe (Process Manager)", batches: 0, progress: 95, alerts: 1 },
+            { id: 2, name: "Priya Patel (Verification Manager)", batches: 0, progress: 100, alerts: 0 },
+            { id: 3, name: "Chen Wei (Data Entry Operator)", batches: 0, progress: 80, alerts: 2 }
+        ];
+
+        // --- Persistence Functions (using localStorage) ---
+
+        /**
+         * Loads the state from localStorage, or uses defaults if none found.
+         */
+        function loadDashboardState() {
+            const storedBatches = localStorage.getItem('activeBatchesDetailed');
+            if (storedBatches) {
+                activeBatchesDetailed = JSON.parse(storedBatches);
+            }
+
+            const storedManagers = localStorage.getItem('batchManagers');
+            if (storedManagers) {
+                batchManagers = JSON.parse(storedManagers);
+            } else {
+                // Default initial state for managers 
+                batchManagers = [...DEFAULT_MANAGERS];
+            }
+            
+            const storedCounter = localStorage.getItem('globalBatchCounter');
+            if (storedCounter) {
+                globalBatchCounter = parseInt(storedCounter);
+            }
+        }
+
+
+        // --- Manager Table Rendering ---
+
+        const managerTableBody = document.getElementById('manager-table-body');
+
+        /**
+         * Renders the dynamic content of the manager table.
+         * The batch count is calculated dynamically from activeBatchesDetailed.
+         */
+        function renderManagerTable() {
+            if (!managerTableBody) return;
+
+            managerTableBody.innerHTML = ''; // Clear existing rows
+
+            // 1. Calculate the unique active batches assigned to each manager across all phases
+            const uniqueBatchesPerManager = batchManagers.map(manager => {
+                const assignedBatchIds = new Set();
+                
+                activeBatchesDetailed.forEach(batch => {
+                    // Check if this manager is assigned to any phase of this batch
+                    if (batch.phases && batch.phases.some(p => p.managerId === manager.id)) {
+                        assignedBatchIds.add(batch.batchId);
+                    }
+                });
+
+                return {
+                    ...manager,
+                    activeBatches: assignedBatchIds.size // This is the calculated count
+                };
+            });
+
+            // 2. Render rows based on the updated manager data
+            uniqueBatchesPerManager.forEach(manager => {
+                const progressColor = manager.progress === 100 ? 'bg-emerald-500' : 
+                                     manager.progress > 85 ? 'bg-emerald-500' : 'bg-yellow-500';
+                const alertColor = manager.alerts > 0 ? 'text-red-600' : 'text-gray-600';
+                
+                const row = document.createElement('tr');
+                row.className = 'bg-white border-b hover:bg-gray-50 transition duration-150';
+
+                row.innerHTML = `
+                    <td class="px-6 py-4 font-medium text-gray-900">${manager.name}</td>
+                    <td class="px-6 py-4">${manager.activeBatches}</td>
+                    <td class="px-6 py-4">
+                        <div class="w-32 bg-gray-200 rounded-full h-2.5">
+                            <div class="${progressColor} h-2.5 rounded-full" style="width: ${manager.progress}%;"></div>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 ${alertColor} font-bold">${manager.alerts}</td>
+                    <td class="px-6 py-4 text-right">
+                        <a href="#" class="text-emerald-600 hover:text-emerald-800 hover:underline font-medium">View Batches</a>
+                    </td>
+                `;
+                managerTableBody.appendChild(row);
+            });
+        }
+
+
+        /**
+         * Checks URL for a success parameter and displays confirmation.
+         */
+        function checkAndShowSuccessMessage() {
+            const params = new URLSearchParams(window.location.search);
+            const success = params.get('success');
+            const batchId = params.get('batchId');
+            const confirmationMessageContainer = document.getElementById('confirmation-message');
+            const confirmationMessageText = document.getElementById('confirmation-text');
+
+            if (success === 'true' && batchId) {
+                // Find the new batch details to get the primary manager's name
+                const newBatch = activeBatchesDetailed.find(b => b.batchId === batchId);
+                let managerName = 'a manager';
+
+                if (newBatch && newBatch.phases.length > 0) {
+                    // Use the manager name from the first phase as the primary contact for the message
+                    managerName = newBatch.phases[0].managerName;
+                }
+
+                confirmationMessageText.innerHTML = `Batch **${batchId}** successfully initiated! Primary phase assigned to **${managerName}**.`;
+                confirmationMessageContainer.classList.remove('hidden');
+                
+                // Clear the URL parameters to prevent re-display on refresh
+                const url = new URL(window.location.href);
+                url.searchParams.delete('success');
+                url.searchParams.delete('batchId');
+                history.replaceState(null, '', url.toString());
+
+                // Optional: Automatically hide after a few seconds
+                setTimeout(() => {
+                    confirmationMessageContainer.classList.add('hidden');
+                }, 8000);
+            }
+        }
+
+        // --- Chart.js Initialization Logic ---
+        function initEmissionsChart() {
+            const ctx = document.getElementById('emissionsChart');
+            
+            if (ctx) {
+                new Chart(ctx, {
+                    type: "doughnut",
+                    data: {
+                        labels: ["Primary Steelmaking", "Finishing & Rolling", "Logistics", "Other"],
+                        datasets: [
+                            {
+                                label: "Emissions by Phase",
+                                data: [68, 22, 6, 4],
+                                backgroundColor: ["#DC2626", "#F97316", "#2563EB", "#6B7280"],
+                                borderColor: "#ffffff",
+                                borderWidth: 3,
+                            },
+                        ],
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false, 
+                        cutout: '75%',
+                        plugins: {
+                            legend: {
+                                position: "bottom",
+                                labels: {
+                                    padding: 20,
+                                    boxWidth: 12,
+                                    font: { family: 'Inter' },
+                                },
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.label || '';
+                                        if (label) { label += ': '; }
+                                        if (context.parsed !== null) {
+                                            label += context.parsed + '%';
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        },
+                    },
+                });
+            }
+        }
+        
+        // --- General UI/Helper Functions ---
+
+        // Helper function to insert SVG icons (replaces React's dangerouslySetInnerHTML)
+        function insertSvgIcons() {
+            const placeholders = document.querySelectorAll('[data-icon]');
+            placeholders.forEach(placeholder => {
+                const iconName = placeholder.getAttribute('data-icon');
+                const classAttr = placeholder.className;
+                
+                if (typeof window[iconName] === 'function') {
+                    placeholder.innerHTML = window[iconName]({ class: classAttr });
+                }
+                placeholder.removeAttribute('data-icon');
+            });
+        }
+        
+        // --- Sidebar Toggling Logic for Mobile ---
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+        const toggleBtn = document.getElementById('sidebar-toggle');
+        const menuIcon = document.getElementById('menu-icon');
+        const closeIcon = document.getElementById('close-icon');
+
+        function toggleSidebar() {
+            const isHidden = sidebar.classList.contains('-translate-x-full');
+            
+            if (isHidden) {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+                menuIcon.style.display = 'none';
+                closeIcon.style.display = 'block';
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+                menuIcon.style.display = 'block';
+                closeIcon.style.display = 'none';
+            }
+        }
+        
+        // --- Initialization ---
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadDashboardState();
+            insertSvgIcons(); 
+            renderManagerTable();
+            checkAndShowSuccessMessage(); 
+
+            // Event Listeners for mobile sidebar
+            if (toggleBtn) toggleBtn.addEventListener('click', toggleSidebar);
+            if (overlay) overlay.addEventListener('click', toggleSidebar);
+            
+            // Logout Logic
+            document.getElementById('logout-btn').addEventListener('click', (e) => {
+                e.preventDefault();
+                window.location.href = 'login.html'; 
+            });
+        });
+        
+        window.onload = initEmissionsChart;
+    </script>
+</body>
+</html>

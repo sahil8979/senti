@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carbon Sentinel - Login</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="bg-white p-10 rounded-xl shadow-2xl w-full max-w-md">
+            <div class="text-center mb-8">
+                <div class="flex justify-center items-center space-x-3 mb-4">
+                    <svg class="h-10 w-10 text-emerald-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" /></svg>
+                    <h1 class="text-3xl font-bold">Carbon Sentinel</h1>
+                </div>
+                <p class="text-gray-500">Please sign in to your account</p>
+            </div>
+            
+            <form onsubmit="handleLogin(event)">
+                <div class="space-y-6">
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
+                        <input type="email" id="email" name="email" required class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+                    </div>
+
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                        <input type="password" id="password" name="password" required class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+                    </div>
+
+                    <div>
+                        <label for="role" class="block text-sm font-medium text-gray-700">Log in as</label>
+                        <select id="role" name="role" class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+                            <option value="dashboard-top-manager.html">Top Manager</option>
+                            <option value="dashboard-manager.html">Process Manager</option>
+                            <option value="dashboard-verification-manager.html">Verification Manager</option>
+                            <option value="dashboard-verifier.html">Verifier / Inspector</option>
+                            <option value="dashboard-worker.html">Data Entry Operator</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">
+                            Log In
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <div id="error-message" class="mt-4 text-center text-red-600 font-medium hidden">
+                Invalid email or password for the selected role.
+            </div>
+        </div>
+    </div>
+    <script>
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const roleSelect = document.getElementById('role');
+            const selectedDashboard = roleSelect.value;
+            const errorMessage = document.getElementById('error-message');
+
+            const roles = {
+                'dashboard-top-manager.html': { email: 'senti@gmail.com', password: '123' },
+                'dashboard-manager.html': { email: 'senti@gmail.com', password: '123' },
+                'dashboard-verification-manager.html': { email: 'senti@gmail.com', password: '123' },
+                'dashboard-verifier.html': { email: 'senti@gmail.com', password: '123' },
+                'dashboard-worker.html': { email: 'senti@gmail.com', password: '123' }
+            };
+
+            const user = roles[selectedDashboard];
+            
+            if (user && email === user.email && password === user.password) {
+                window.location.href = selectedDashboard;
+            } else {
+                errorMessage.classList.remove('hidden');
+            }
+        }
+    </script>
+</body>
+</html>

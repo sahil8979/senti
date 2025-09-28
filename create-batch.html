@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carbon Sentinel - Create Batch</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .modal-backdrop {
+            transition: opacity 0.3s ease;
+        }
+        .modal-content {
+            transition: transform 0.3s ease;
+        }
+        .phase-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .assigned-manager {
+            background-color: #D1FAE5; /* emerald-100 */
+            color: #047857; /* emerald-800 */
+            border: 1px solid #6EE7B7; /* emerald-300 */
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <!-- Icon Definitions -->
+    <script>
+        const DeleteIcon = (props) => `<svg class="${props.class}" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>`;
+        const PlusIcon = (props) => `<svg class="${props.class}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" /></svg>`;
+    </script>
+
+    <div class="flex h-screen">
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar" class="bg-white shadow-lg w-64 flex flex-col hidden lg:flex">
+            <div class="p-6 flex items-center space-x-4 border-b">
+                <svg class="h-8 w-8 text-emerald-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" /></svg>
+                <span id="logo-text" class="font-bold text-xl">Carbon Sentinel</span>
+            </div>
+            <nav class="flex-1 px-4 py-6 space-y-2">
+                <a href="dashboard-top-manager.html" class="flex items-center p-3 rounded-xl text-gray-800 bg-emerald-100 font-semibold shadow-inner">
+                    <svg class="h-6 w-6 text-emerald-600 mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" /></svg>
+                    <span class="ml-4">Dashboard</span>
+                </a>
+                <a href="#" class="flex items-center p-3 rounded-lg text-gray-600 hover:bg-gray-200">
+                    <svg class="h-6 w-6 mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z" /></svg>
+                    <span class="ml-4">Reports</span>
+                </a>
+                 <a href="#" class="flex items-center p-3 rounded-lg text-gray-600 hover:bg-gray-200">
+                    <svg class="h-6 w-6 mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6a7.5 7.5 0 100 15 7.5 7.5 0 000-15z" /><path stroke-linecap="round" stroke-linejoin="round" d="M12.75 9.75v3.75m0 0l-3.75 2.25M12.75 13.5l3.75 2.25" /></svg>
+                    <span class="ml-4">Strategic Analysis</span>
+                </a>
+            </nav>
+            <div class="px-4 py-6 border-t mt-auto">
+                <a href="login.html" class="flex items-center p-3 rounded-lg text-gray-600 hover:bg-gray-200">
+                    <svg class="h-6 w-6 mr-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" /></svg>
+                    <span class="ml-4">Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8 overflow-y-auto bg-white">
+            <!-- Header -->
+            <div class="flex justify-between items-center pb-6 border-b">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900">Initiate New Production Batch</h1>
+                    <p class="text-gray-500 mt-1">Define the high-level production phases and assign responsible process managers.</p>
+                </div>
+                 <div class="flex items-center space-x-4">
+                     <div class="flex -space-x-2 overflow-hidden">
+                        <img class="inline-block h-9 w-9 rounded-full ring-2 ring-white" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="User Avatar">
+                    </div>
+                    <div>
+                        <p class="font-semibold text-sm">Jane Smith</p>
+                        <p class="text-xs text-gray-500">Head of Compliance</p>
+                    </div>
+                </div>
+            </div>
+            
+            <form id="batch-form" onsubmit="event.preventDefault(); finalizeBatchAssignment();">
+                <!-- Batch Details -->
+                <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl">
+                    <div>
+                        <label for="batch-id" class="block text-sm font-medium text-gray-700">Batch ID</label>
+                        <input type="text" id="batch-id" class="mt-1 block w-full rounded-xl border-gray-300 shadow-sm bg-gray-100 p-2.5" readonly required>
+                    </div>
+                    <div>
+                        <label for="product-type" class="block text-sm font-medium text-gray-700">Product Type</label>
+                        <input type="text" id="product-type" placeholder="e.g., Hot-Rolled Steel Coil" class="mt-1 block w-full rounded-xl border border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 p-2.5" required>
+                    </div>
+                </div>
+
+                <!-- Phase Assignment -->
+                <div class="mt-8 max-w-4xl">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">Production Phases</h2>
+
+                    <!-- SEARCH BAR ADDED HERE -->
+                    <div class="mb-4">
+                        <label for="phase-search" class="sr-only">Search Phase</label>
+                        <input type="text" id="phase-search" oninput="searchPhases(this.value)" placeholder="Search production phase name..." class="mt-1 block w-full rounded-xl border border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 p-2.5">
+                    </div>
+                    <!-- END SEARCH BAR -->
+
+                    <div id="phases-container" class="space-y-4">
+                        <!-- Phase Card 1 -->
+                        <div class="bg-white border rounded-xl p-4 flex items-center justify-between shadow-sm phase-input-group" data-assigned-manager-id="0" data-assigned-manager-name="">
+                            <div class="flex items-center gap-4 w-1/2">
+                                <span class="font-bold text-gray-500 text-lg w-4">1</span>
+                                <input type="text" value="Primary Steelmaking" class="phase-name text-lg font-semibold border-0 p-1 focus:ring-2 focus:ring-emerald-200 rounded-md w-full" required>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <!-- DELETE BUTTON -->
+                                <button type="button" onclick="removePhase(this)" class="p-2 text-red-500 hover:bg-red-100 hover:text-red-700 rounded-xl transition duration-150" title="Delete Phase">
+                                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94l-1.72-1.72z" clip-rule="evenodd" /></svg>
+                                </button>
+                                <button type="button" onclick="openManagerModal(this)" class="assign-manager-btn bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-xl hover:bg-gray-300">
+                                    Assign Manager
+                                </button>
+                            </div>
+                        </div>
+                        <!-- Phase Card 2 -->
+                        <div class="bg-white border rounded-xl p-4 flex items-center justify-between shadow-sm phase-input-group" data-assigned-manager-id="0" data-assigned-manager-name="">
+                            <div class="flex items-center gap-4 w-1/2">
+                                <span class="font-bold text-gray-500 text-lg w-4">2</span>
+                                <input type="text" value="Hot Rolling" class="phase-name text-lg font-semibold border-0 p-1 focus:ring-2 focus:ring-emerald-200 rounded-md w-full" required>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <!-- DELETE BUTTON -->
+                                <button type="button" onclick="removePhase(this)" class="p-2 text-red-500 hover:bg-red-100 hover:text-red-700 rounded-xl transition duration-150" title="Delete Phase">
+                                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94l-1.72-1.72z" clip-rule="evenodd" /></svg>
+                                </button>
+                                <button type="button" onclick="openManagerModal(this)" class="assign-manager-btn bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-xl hover:bg-gray-300">
+                                    Assign Manager
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="button" onclick="addPhase()" class="mt-4 text-emerald-600 font-semibold hover:text-emerald-800 flex items-center gap-2">
+                        <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" /></svg>
+                        Add Phase
+                    </button>
+                    
+                    <div id="error-message-div" class="text-red-600 font-medium mt-4 hidden p-3 bg-red-50 border border-red-200 rounded-xl"></div>
+
+                </div>
+
+                <!-- Footer Actions -->
+                <div class="mt-8 pt-6 border-t flex justify-end">
+                    <button type="submit" class="bg-emerald-600 text-white font-bold py-3 px-8 rounded-xl shadow-lg hover:bg-emerald-700 transition duration-150">
+                        Finalize Assignments & Initiate Batch
+                    </button>
+                </div>
+            </form>
+
+        </main>
+    </div>
+
+    <!-- Assign Manager Modal -->
+    <div id="manager-modal" class="fixed inset-0 bg-gray-900 bg-opacity-75 modal-backdrop flex items-center justify-center p-4 hidden opacity-0">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md modal-content transform scale-95">
+            <div class="p-5 border-b flex justify-between items-center">
+                <h2 class="text-xl font-bold text-gray-800">Assign Process Manager</h2>
+                <button type="button" onclick="closeManagerModal()" class="text-gray-400 hover:text-gray-600 text-3xl leading-none">&times;</button>
+            </div>
+            <div class="p-5">
+                <input type="text" id="search-manager" oninput="populateManagerList(this.value)" placeholder="Search for manager..." class="w-full border-gray-300 rounded-xl shadow-sm focus:ring-emerald-500 focus:border-emerald-500 p-2.5">
+                <div id="manager-list" class="mt-4 max-h-80 overflow-y-auto space-y-1">
+                    <!-- Manager list will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+<script>
+    const modal = document.getElementById('manager-modal');
+    const phasesContainer = document.getElementById('phases-container');
+    const batchIdInput = document.getElementById('batch-id');
+    const productTypeInput = document.getElementById('product-type');
+    const errorMessageDiv = document.getElementById('error-message-div');
+    
+    let currentPhaseElement = null;
+    let globalBatchCounter = 0;
+
+    // --- Persistence & Initialization ---
+
+    function loadInitialState() {
+        const storedCounter = localStorage.getItem('globalBatchCounter');
+        if (storedCounter) {
+            globalBatchCounter = parseInt(storedCounter);
+        }
+    }
+    
+    function generateBatchId() {
+        const date = new Date();
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        // We use globalBatchCounter + 1 here to show the NEXT batch ID before saving
+        const nextCount = (globalBatchCounter + 1).toString().padStart(5, '0');
+        
+        // Example ID format: B-YYYY-MM-00001
+        return `B-${year}-${month}-${nextCount}`;
+    }
+
+    // --- Manager Data (Harmonized with Top Dashboard IDs) ---
+
+    // Note: These IDs must match the structure defined in dashboard-top-manager.html
+    const ALL_MANAGERS_DETAILS = [
+        { id: 1, name: 'John Doe', role: 'Process Manager', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80' },
+        { id: 2, name: 'Priya Patel', role: 'Verification Manager', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80' },
+        { id: 3, name: 'Chen Wei', role: 'Data Entry Operator', avatar: 'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80' }
+    ];
+
+    // --- Modal Logic ---
+
+    function openManagerModal(buttonElement) {
+        // The button's parent (the phase card div) holds the assigned ID
+        currentPhaseElement = buttonElement.closest('[data-assigned-manager-id]'); 
+        populateManagerList('');
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.remove('opacity-0');
+            modal.querySelector('.modal-content').classList.remove('scale-95');
+            document.getElementById('search-manager').focus();
+        }, 10);
+    }
+
+    function closeManagerModal() {
+        modal.classList.add('opacity-0');
+        modal.querySelector('.modal-content').classList.add('scale-95');
+        setTimeout(() => modal.classList.add('hidden'), 300);
+    }
+
+    function populateManagerList(searchTerm) {
+        const list = document.getElementById('manager-list');
+        list.innerHTML = '';
+        const lowerSearchTerm = searchTerm.toLowerCase();
+        
+        const filteredManagers = ALL_MANAGERS_DETAILS.filter(m => 
+            m.name.toLowerCase().includes(lowerSearchTerm) || m.role.toLowerCase().includes(lowerSearchTerm)
+        );
+
+        filteredManagers.forEach(manager => {
+            const item = document.createElement('div');
+            item.className = 'p-3 hover:bg-gray-100 rounded-xl cursor-pointer flex items-center gap-4';
+            item.onclick = () => selectManager(manager);
+            item.innerHTML = `
+                <img class="h-10 w-10 rounded-full object-cover" src="${manager.avatar}" alt="${manager.name}">
+                <div>
+                    <p class="font-semibold text-gray-800">${manager.name}</p>
+                    <p class="text-xs text-gray-500">${manager.role} (ID: ${manager.id})</p>
+                </div>
+            `;
+            list.appendChild(item);
+        });
+    }
+
+    function selectManager(manager) {
+        if (currentPhaseElement) {
+            const button = currentPhaseElement.querySelector('.assign-manager-btn');
+
+            // 1. Update the phase element data attributes
+            currentPhaseElement.setAttribute('data-assigned-manager-id', manager.id);
+            currentPhaseElement.setAttribute('data-assigned-manager-name', manager.name);
+            
+            // 2. Update button appearance
+            button.innerHTML = `
+                <div class="flex items-center gap-2">
+                    <img class="h-6 w-6 rounded-full object-cover" src="${manager.avatar}" alt="${manager.name}">
+                    <span class="font-semibold text-sm">${manager.name}</span>
+                </div>
+            `;
+            button.classList.remove('bg-gray-200', 'hover:bg-gray-300', 'text-gray-800');
+            button.classList.add('assigned-manager', 'text-emerald-800', 'shadow-md');
+        }
+        closeManagerModal();
+    }
+    
+    // --- Phase Management ---
+    
+    function updatePhaseNumbers() {
+        Array.from(phasesContainer.children).forEach((phase, index) => {
+            // Only update numbering for visible phases
+            if (!phase.classList.contains('hidden')) {
+                const numberSpan = phase.querySelector('.font-bold');
+                if (numberSpan) numberSpan.textContent = index + 1;
+            }
+        });
+    }
+
+    function removePhase(buttonElement) {
+        const phaseElement = buttonElement.closest('.phase-input-group');
+        if (phasesContainer.children.length > 1) {
+            phaseElement.remove();
+            updatePhaseNumbers();
+        } else {
+             // Show error if user tries to delete the last phase
+            errorMessageDiv.textContent = "A batch must have at least one production phase.";
+            errorMessageDiv.classList.remove('hidden');
+            setTimeout(() => errorMessageDiv.classList.add('hidden'), 5000);
+        }
+    }
+
+    function addPhase() {
+        const phaseCount = phasesContainer.children.length + 1;
+        const newPhase = document.createElement('div');
+        newPhase.className = 'bg-white border rounded-xl p-4 flex items-center justify-between shadow-sm phase-input-group';
+        newPhase.setAttribute('data-assigned-manager-id', "0");
+        newPhase.setAttribute('data-assigned-manager-name', ""); // Initialize name attribute
+
+        newPhase.innerHTML = `
+            <div class="flex items-center gap-4 w-1/2">
+                <span class="font-bold text-gray-500 text-lg w-4">${phaseCount}</span>
+                <input type="text" placeholder="Enter Phase Name" class="phase-name text-lg font-semibold border-0 p-1 focus:ring-2 focus:ring-emerald-200 rounded-md w-full" required>
+            </div>
+            <div class="flex items-center gap-3">
+                <!-- DELETE BUTTON -->
+                <button type="button" onclick="removePhase(this)" class="p-2 text-red-500 hover:bg-red-100 hover:text-red-700 rounded-xl transition duration-150" title="Delete Phase">
+                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94l-1.72-1.72z" clip-rule="evenodd" /></svg>
+                </button>
+                <button type="button" onclick="openManagerModal(this)" class="assign-manager-btn bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-xl hover:bg-gray-300">
+                    Assign Manager
+                </button>
+            </div>
+        `;
+        phasesContainer.appendChild(newPhase);
+        updatePhaseNumbers();
+    }
+
+    // --- Phase Search Logic ---
+    function searchPhases(searchTerm) {
+        const term = searchTerm.toLowerCase().trim();
+        const phaseElements = Array.from(phasesContainer.children);
+
+        phaseElements.forEach(phaseElement => {
+            const phaseNameInput = phaseElement.querySelector('.phase-name');
+            if (phaseNameInput) {
+                const phaseName = phaseNameInput.value.toLowerCase();
+                
+                if (phaseName.includes(term)) {
+                    phaseElement.classList.remove('hidden');
+                } else {
+                    phaseElement.classList.add('hidden');
+                }
+            }
+        });
+        // We do not re-number phases during search, only hide/show.
+    }
+    
+    // --- Final Assignment Logic (Form Submission) ---
+
+    function finalizeBatchAssignment() {
+        const productType = productTypeInput.value.trim();
+        let assignedManagerIds = new Set();
+        let unassignedErrors = 0;
+        
+        errorMessageDiv.classList.add('hidden');
+        errorMessageDiv.textContent = '';
+        
+        if (!productType) {
+            errorMessageDiv.textContent = "Please enter a Product Type.";
+            errorMessageDiv.classList.remove('hidden');
+            productTypeInput.focus();
+            return;
+        }
+
+        // 1. Validate and collect data (only from visible phases)
+        const phaseElements = Array.from(phasesContainer.children).filter(el => !el.classList.contains('hidden'));
+        const phasesData = [];
+
+        if (phaseElements.length === 0) {
+            errorMessageDiv.textContent = "The batch must contain at least one production phase.";
+            errorMessageDiv.classList.remove('hidden');
+            return;
+        }
+
+        phaseElements.forEach((phaseElement) => {
+            const managerId = parseInt(phaseElement.getAttribute('data-assigned-manager-id'));
+            const managerName = phaseElement.getAttribute('data-assigned-manager-name');
+            const phaseName = phaseElement.querySelector('.phase-name').value.trim();
+            
+            if (managerId === 0 || !phaseName) {
+                unassignedErrors++;
+            } else {
+                assignedManagerIds.add(managerId);
+                phasesData.push({
+                    phase: phaseName,
+                    managerId: managerId,
+                    managerName: managerName,
+                    status: 'Data Entry Pending', // Initial status for Process Manager
+                    progress: 0
+                });
+            }
+        });
+
+        if (unassignedErrors > 0) {
+            errorMessageDiv.textContent = `Please ensure all phases have a name and an assigned manager.`;
+            errorMessageDiv.classList.remove('hidden');
+            return;
+        }
+        
+        // --- DATA PERSISTENCE ---
+
+        // Load existing state
+        let activeBatchesDetailed = JSON.parse(localStorage.getItem('activeBatchesDetailed') || '[]');
+        let batchManagers = JSON.parse(localStorage.getItem('batchManagers') || '[]');
+
+        // Initialize managers if empty (ensures the base list exists if local storage was cleared)
+        if (batchManagers.length === 0) {
+             batchManagers = [
+                { id: 1, name: "John Doe (Process Manager)", batches: 0, progress: 95, alerts: 1 },
+                { id: 2, name: "Priya Patel (Verification Manager)", batches: 0, progress: 100, alerts: 0 },
+                { id: 3, name: "Chen Wei (Data Entry Operator)", batches: 0, progress: 80, alerts: 2 }
+            ];
+        }
+
+        // 2. Generate final batch ID and create the new batch object
+        globalBatchCounter++;
+        const finalBatchId = generateBatchId(); // Use the function to get the correct string format
+        
+        const newBatch = {
+            batchId: finalBatchId,
+            // Use the manager of the first phase as the primary contact for simplicity
+            managerId: phasesData[0].managerId, 
+            managerName: phasesData[0].managerName,
+            status: 'Data Entry Pending', 
+            product: productType, 
+            progress: 0,
+            creationDate: new Date().toISOString().substring(0, 10),
+            phases: phasesData 
+        };
+
+        activeBatchesDetailed.push(newBatch);
+
+        // 3. Update manager statistics (mock progress reduction)
+        assignedManagerIds.forEach(id => {
+            const manager = batchManagers.find(m => m.id === id);
+            if (manager) {
+                // Mock logic: Slightly reduce progress when new work is added
+                if (manager.progress > 70) {
+                     manager.progress = Math.max(70, manager.progress - 3);
+                }
+                // Add a new mock alert
+                if (Math.random() > 0.7) {
+                    manager.alerts += 1;
+                }
+            }
+        });
+
+        // 4. Save state
+        localStorage.setItem('activeBatchesDetailed', JSON.stringify(activeBatchesDetailed));
+        localStorage.setItem('batchManagers', JSON.stringify(batchManagers));
+        localStorage.setItem('globalBatchCounter', globalBatchCounter.toString());
+        
+        // 5. Redirect back to Top Manager Dashboard with success flag
+        window.location.href = 'dashboard-top-manager.html?success=true&batchId=' + finalBatchId;
+    }
+
+    // --- Initialization ---
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        loadInitialState();
+        batchIdInput.value = generateBatchId();
+
+        // Note: Initial phase cards already have data-icon attributes in the HTML structure.
+        // We only need to insert the SVGs for dynamic elements, but running once here ensures all initial icons are rendered.
+        // Since the current HTML uses external SVG paths, we don't strictly need insertSvgIcons() here if icons are path-based. 
+        // However, sticking to the previously defined `DeleteIcon` and `PlusIcon` functions:
+        // We don't have insertSvgIcons definition, so let's use the function from the global script block provided in the earlier response.
+        
+        // Helper function to insert SVG icons (defined earlier in the global script block)
+        function insertSvgIcons() {
+            const placeholders = document.querySelectorAll('.phase-input-group [title="Delete Phase"]');
+            placeholders.forEach(placeholder => {
+                const classAttr = placeholder.className;
+                
+                // Re-inserting the SVG structure
+                placeholder.innerHTML = `<svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94l-1.72-1.72z" clip-rule="evenodd" /></svg>`;
+            });
+
+            // For the Plus icon
+            const plusPlaceholder = document.querySelector('button[onclick="addPhase()"]');
+            if(plusPlaceholder && plusPlaceholder.querySelector('.w-5.h-5')) {
+                 plusPlaceholder.querySelector('.w-5.h-5').innerHTML = `<path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />`;
+            }
+        }
+        // Since the icons are complex, and included via global script block, 
+        // ensuring the initial dynamic elements are styled correctly is key.
+        // We will call updatePhaseNumbers() here to ensure initial IDs are correct even if the DOM structure changes.
+        updatePhaseNumbers();
+    });
+
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+            closeManagerModal();
+        }
+    });
+
+</script>
+
+</body>
+</html>
