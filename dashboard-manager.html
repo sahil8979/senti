@@ -48,6 +48,7 @@
             const filteredBatches = allBatches.filter(batch => batch.managerId === CURRENT_MANAGER_ID);
 
             // 2. Check if the list has changed since last render
+            // Using JSON.stringify for a deep comparison since these are arrays of objects
             if (filteredBatches.length !== managerBatches.length || 
                 JSON.stringify(filteredBatches) !== JSON.stringify(managerBatches)) {
                 
@@ -70,6 +71,7 @@
             
             // --- Update Key Metrics ---
             upcomingBatchesMetric.textContent = upcomingBatches.length;
+            // Note: We include the mock static 5 active batches for the metric display
             activeBatchesMetric.textContent = liveBatches.length + 5; 
 
             // --- Render Upcoming Batches Section ---
@@ -92,7 +94,7 @@
                             <p class="text-sm text-gray-600">Product: ${batch.product}</p>
                             <p class="text-xs text-gray-500 mt-1">Assigned on: ${batch.creationDate}</p>
                         </div>
-                        <a href="commingsoon.html" class="mt-3 sm:mt-0 bg-emerald-600 text-white font-semibold py-2 px-4 rounded-xl shadow-md hover:bg-emerald-700 transition duration-150">Build Workflow</a>
+                        <a href="phase-workflow-builder.html?batch=${batch.batchId}" class="mt-3 sm:mt-0 bg-emerald-600 text-white font-semibold py-2 px-4 rounded-xl shadow-md hover:bg-emerald-700 transition duration-150">Build Workflow</a>
                     `;
                     upcomingContainer.appendChild(batchCard);
                 });
@@ -100,8 +102,10 @@
         }
 
         // --- Polling Setup ---
+        // Poll every 2 seconds to check for new batches assigned by the Top Manager
         document.addEventListener('DOMContentLoaded', () => {
             loadAndUpdateBatches(); // Initial load
+            // Set up polling to fetch data every 2 seconds
             setInterval(loadAndUpdateBatches, 2000); 
         });
         
@@ -258,7 +262,7 @@
                                         <h4 class="font-bold mt-1">Inconsistent Gas Meter Reading</h4>
                                         <p class="text-xs text-gray-500 mt-2">From: Audit Team</p>
                                         <p class="text-sm text-gray-600 mt-2">"The sensor data for BF-GAS-001 shows a 15% deviation..."</p>
-                                        <a href="commingsoon.html" class="mt-4 block w-full bg-red-600 text-white font-semibold py-2 rounded-xl text-center hover:bg-red-700 transition duration-150">View Details</a>
+                                        <button  href="commingsoon.html" class="mt-4 w-full bg-red-600 text-white font-semibold py-2 rounded-xl hover:bg-red-700 transition duration-150">View Details</button>
                                     </div>
                                 </div>
                                 <!-- Hotspot Item -->
@@ -271,7 +275,7 @@
                                             <li class="flex justify-between"><span>3. Coke Oven</span><span class="font-bold">12%</span></li>
                                             <li class="flex justify-between text-gray-500"><span>4. Others</span><span>5%</span></li>
                                         </ul>
-                                        <a href="commingsoon.html" class="mt-4 block w-full bg-gray-200 text-gray-800 font-semibold py-2 rounded-xl text-center hover:bg-gray-300 transition duration-150">Analyze Further</a>
+                                        <button href="commingsoon.html" class="mt-4 w-full bg-gray-200 text-gray-800 font-semibold py-2 rounded-xl hover:bg-gray-300 transition duration-150">Analyze Further</button>
                                     </div>
                                 </div>
                             </div>
