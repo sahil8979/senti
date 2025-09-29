@@ -81,25 +81,25 @@
             <p class="text-xs text-center text-gray-500 mb-4">Click items to add them to the canvas. Delete using ×.</p>
             <div id="toolbox" class="space-y-3">
               <!-- Coke Oven -->
-              <div class="relative p-3 bg-white border rounded-md shadow-sm text-center cursor-pointer hover:bg-gray-200">
+              <div class="relative p-3 bg-white border rounded-md shadow-sm text-center cursor-pointer hover:bg-gray-200"
+                   onclick="addNode('Coke Oven','bg-gray-100','text-gray-800')">
                 Coke Oven
-                <button onclick="this.parentElement.remove()" 
+                <button onclick="event.stopPropagation(); this.parentElement.remove()" 
                         class="absolute top-1 right-1 text-red-500 hover:text-red-700 text-xs font-bold px-1 rounded">×</button>
-                <div onclick="addNode('Coke Oven','bg-gray-100','text-gray-800')"></div>
               </div>
               <!-- Sinter Plant -->
-              <div class="relative p-3 bg-white border rounded-md shadow-sm text-center cursor-pointer hover:bg-gray-200">
+              <div class="relative p-3 bg-white border rounded-md shadow-sm text-center cursor-pointer hover:bg-gray-200"
+                   onclick="addNode('Sinter Plant','bg-gray-100','text-gray-800')">
                 Sinter Plant
-                <button onclick="this.parentElement.remove()" 
+                <button onclick="event.stopPropagation(); this.parentElement.remove()" 
                         class="absolute top-1 right-1 text-red-500 hover:text-red-700 text-xs font-bold px-1 rounded">×</button>
-                <div onclick="addNode('Sinter Plant','bg-gray-100','text-gray-800')"></div>
               </div>
               <!-- Blast Furnace -->
-              <div class="relative p-3 bg-white border rounded-md shadow-sm text-center cursor-pointer hover:bg-orange-200">
+              <div class="relative p-3 bg-white border rounded-md shadow-sm text-center cursor-pointer hover:bg-orange-200"
+                   onclick="addNode('Blast Furnace','bg-orange-100','text-orange-800')">
                 Blast Furnace
-                <button onclick="this.parentElement.remove()" 
+                <button onclick="event.stopPropagation(); this.parentElement.remove()" 
                         class="absolute top-1 right-1 text-red-500 hover:text-red-700 text-xs font-bold px-1 rounded">×</button>
-                <div onclick="addNode('Blast Furnace','bg-orange-100','text-orange-800')"></div>
               </div>
             </div>
 
@@ -222,7 +222,7 @@
       const delBtn = document.createElement('button');
       delBtn.textContent = '×';
       delBtn.className = "absolute top-1 right-1 text-red-500 hover:text-red-700 text-xs font-bold px-1 rounded";
-      delBtn.onclick = () => div.remove();
+      delBtn.onclick = (e) => { e.stopPropagation(); div.remove(); };
       div.appendChild(delBtn);
 
       div.onclick = (e) => { if(e.target === delBtn) return; addNode(name, 'bg-purple-100', 'text-purple-800'); }
