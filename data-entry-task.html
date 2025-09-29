@@ -113,9 +113,9 @@
                  <!-- Footer Actions -->
                 <div class="mt-12 pt-6 border-t flex justify-end items-center gap-4">
                      <a href="dashboard-worker.html" class="text-gray-700 font-semibold py-3 px-6 rounded-lg hover:bg-gray-200">Cancel</a>
-                     <a href="dashboard-worker.html" onclick="alert('Data submitted successfully for verification!')" class="bg-emerald-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-emerald-700">
+                     <button id="submit-btn" class="bg-emerald-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-emerald-700">
                         Submit Data
-                    </a>
+                    </button>
                 </div>
 
             </div>
@@ -126,6 +126,7 @@
     const dropZone = document.getElementById('drop-zone');
     const fileInput = document.getElementById('file-upload');
     const fileInfo = document.getElementById('file-info');
+    const submitBtn = document.getElementById('submit-btn');
 
     dropZone.addEventListener('dragover', (e) => {
         e.preventDefault();
@@ -151,11 +152,20 @@
             updateFileInfo(fileInput.files[0]);
         }
     });
-    
+
     function updateFileInfo(file) {
         fileInfo.textContent = `File selected: ${file.name} (${(file.size / 1024).toFixed(2)} KB)`;
         fileInfo.classList.add('font-semibold', 'text-emerald-700');
     }
+
+    submitBtn.addEventListener('click', () => {
+        if (!fileInput.files.length) {
+            alert("Please select or upload a file before submitting!");
+        } else {
+            alert("Data submitted successfully for verification!");
+            window.location.href = "dashboard-worker.html";
+        }
+    });
 </script>
 </body>
 </html>
