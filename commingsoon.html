@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carbon Sentinel - Coming Soon</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .progress-bar-fill {
+            animation: loadProgress 4s infinite alternate;
+        }
+        @keyframes loadProgress {
+            from { width: 50%; }
+            to { width: 85%; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 min-h-screen flex items-center justify-center p-4">
+
+    <div class="bg-white p-8 sm:p-12 rounded-2xl shadow-2xl w-full max-w-lg text-center border border-gray-100">
+        
+        <!-- Logo and Title -->
+        <div class="flex flex-col items-center mb-8">
+            <svg class="h-16 w-16 text-emerald-600 mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
+            </svg>
+            <h1 class="text-4xl font-extrabold text-gray-900">Feature Under Development</h1>
+        </div>
+        
+        <p class="text-lg text-gray-600 mb-6">
+            The requested page is currently in the final stages of integration. We are working hard to bring this feature online!
+        </p>
+        
+        <!-- Mock Progress Bar -->
+        <div class="mt-8 mb-8">
+            <p class="text-sm font-semibold text-emerald-700 mb-2">Estimated Progress</p>
+            <div class="w-full bg-gray-200 rounded-full h-3">
+                <div class="progress-bar-fill bg-emerald-600 h-3 rounded-full" style="width: 50%;"></div>
+            </div>
+            <p class="text-xs text-gray-400 mt-2">Final testing and deployment phase underway.</p>
+        </div>
+
+        <!-- Back Button -->
+        <button onclick="window.history.back()" 
+            class="inline-block mt-6 px-8 py-3 bg-emerald-600 text-white font-semibold rounded-xl shadow-md hover:bg-emerald-700 transition duration-150">
+            ← Back
+        </button>
+
+    </div>
+</body>
+</html>
